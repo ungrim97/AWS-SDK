@@ -4,7 +4,7 @@ use Test::Most;
 use Bean::AWS::SNS;
 use FindBin;
 use Test::LWP::UserAgent;
-use Test::Warnnings;
+use Test::Warnings;
 
 subtest 'Successful Response' => sub {
     my $publisher = Bean::AWS::SNS->new(

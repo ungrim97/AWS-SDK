@@ -48,14 +48,15 @@ encode to a UTF8 byte string less than 256 bytes
 
         my $format  = $input->{format};
         my %params = (
-            Action  => 'Publish',
-            Subject => $$input->{subject} || 'Bean::AWS::SNS Message',
-            Message => $input->{message},
+            Action   => 'Publish',
+            Subject  => $input->{subject} || 'Bean::AWS::SNS Message',
+            Message  => $input->{message},
+            TopicARN => $self->topic_arn,
             $format ? (MessageStructure => $format) : (),
         );
 
         my $response = $self->make_request($base_url, \%params);
-        my $message_id = $self->_get_message_id($response->{content});
+        my $message_id = $self->_get_message_id($response->decoded_content);
     }
 }
 

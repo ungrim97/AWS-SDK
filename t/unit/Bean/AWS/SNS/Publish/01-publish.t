@@ -12,7 +12,7 @@ use Bean::AWS::Exception;
 subtest 'Publish -> success' => sub {
     my $publisher = Bean::AWS::SNS->new(topic => 'test', config_dir => $FindBin::Bin);
     $publisher = Test::MockObject::Extends->new($publisher);
-    $publisher->mock('make_request' => sub {return success_xml()});
+    $publisher->mock('make_request' => sub {return success_response()});
 
     my $message_id = $publisher->publish({
         subject => 'Test Message',
@@ -26,7 +26,7 @@ subtest 'Publish -> success' => sub {
 subtest 'Publish -> fail' => sub {
     my $publisher = Bean::AWS::SNS->new(topic => 'test', config_dir => $FindBin::Bin);
     $publisher = Test::MockObject::Extends->new($publisher);
-    $publisher->mock('make_request' => sub {return fail_xml()});
+    $publisher->mock('make_request' => sub {return fail_response()});
 
     cmp_deeply(
         exception {
@@ -66,7 +66,7 @@ subtest 'Publish -> invalid args' => sub {
                     message => join('', (1) x 256001), # A very long message
                 }),
             }.'',
-            re(qr/SNS Message content is invalid for sending via SNS/),
+            re(qr/SNS Message content is too long for sending via SNS/),
             'Publish Failed correctly'
         );
     };
@@ -84,11 +84,11 @@ subtest 'Publish -> invalid args' => sub {
 
 done_testing;
 
-sub fail_xml {
+sub fail_response {
     Bean::AWS::Exception::FailedRequest->throw({message => 'InternalFailure'});
 }
 
-sub success_xml {
+sub success_response {
     my $content = <<'XML';
 <PublishResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/">
   <PublishResult>
@@ -100,10 +100,5 @@ sub success_xml {
 </PublishResponse>
 XML
 
-    return {
-        content => $content,
-        success => 1,
-        status  => 200,
-        reason  => 'Success',
-    };
+    HTTP::Response->new('200', 'Ok', ['Content-Type' => 'text/xml'], $content);
 }
