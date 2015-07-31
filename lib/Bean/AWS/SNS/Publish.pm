@@ -51,12 +51,18 @@ encode to a UTF8 byte string less than 256 bytes
             Action   => 'Publish',
             Subject  => $input->{subject} || 'Bean::AWS::SNS Message',
             Message  => $input->{message},
-            TopicARN => $self->topic_arn,
+            TopicArn => $self->topic_arn,
             $format ? (MessageStructure => $format) : (),
         );
 
         my $response = $self->make_request($base_url, \%params);
-        my $message_id = $self->_get_message_id($response->decoded_content);
+
+        if ($response->is_success){
+            my $message_id = $self->_get_message_id($response->decoded_content);
+        } else {
+            use Data::Dumper;
+            Bean::AWS::Exception::FailedRequest->throw({message => Dumper $response});
+        }
     }
 }
 
