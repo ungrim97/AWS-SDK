@@ -52,7 +52,7 @@ has timestamp         => (
     is      => 'ro',
     lazy    => 1,
     default => sub {
-        return DateTime->now(time_zone => 'UTC', locale => 'en_UK')."Z";
+        return DateTime->now(time_zone => 'UTC', locale => 'en_UK');
     }
 );
 

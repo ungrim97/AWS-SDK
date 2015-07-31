@@ -66,6 +66,7 @@ encode to a UTF8 byte string less than 256 bytes
     }
 }
 
+# Extracts the MessageId string from a successful response
 sub _get_message_id {
     my ($self, $content) = @_;
 
