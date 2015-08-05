@@ -105,12 +105,17 @@ API Methods are available in Amazon
 
 =item Publish
 
-Send messages to SNS
+Publish a message to an SNS Topic
+
+=item Subscribe
+
+Subscribe an Endpoint to a SNS Topic in order to recieve messages
 
 =cut
 
 # Supported Actions
 with 'Bean::AWS::SNS::Publish';
+with 'Bean::AWS::SNS::Subscribe';
 
 =back
 
