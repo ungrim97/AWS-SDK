@@ -71,9 +71,9 @@ has ua => (
 =head2 make_request ('BASE_URL', \%query_params)
 
 Merges the provided optional query parameters with the
-required Auth Parameters from config then encodes the result
-as UTF8, escapes them and then makes a request to the AWS
-SNS API at BASE_URL with the resulting query string.
+required Auth Parameters from config, escapes them and
+then makes a request to the AWS SNS API at BASE_URL with
+the resulting query string.
 
 Returns a HTTP::Response object or throws and exception
 
@@ -98,7 +98,7 @@ Returns a HTTP::Response object or throws and exception
 
 =head2 encode_params (\%params)
 
-Takes a hashref of query parameter key value pairs. Encodes them as a
+Takes a hashref of query parameter key value pairs encoded as a
 UTF8 Byte string then escapes any metacharacters. Expects unencoded
 characters. Returns a string suitable as the query part of a URL.
 
@@ -108,7 +108,7 @@ sub encode_params {
     my ($self, $params) = @_;
 
     return join('&', (map {
-        "$_=".uri_escape_utf8($params->{$_}, '^A-Za-z0-9\-_.~')
+        "$_=".uri_escape($params->{$_}, '^A-Za-z0-9\-_.~')
     } sort keys %$params));
 }
 
@@ -118,9 +118,10 @@ AWS SNS expects all calls to its API to be signed. The signature
 is the result of HMAC_SHA256 encrypting the encoded URL query string.
 
 This method takes a URI Object representing the root Url and a hashref of
-params. Encoded the params along with the required L<Bean::AWS::SNS::Auth::auth_params|auth_params>
-and generates a digital signature before both the signature and the encoded params
-are used to set the L<URI::query|query> string on the URI object
+params. URI escapes the params along with the required
+L<Bean::AWS::SNS::Auth::auth_params|auth_params> and generates a digital
+signature before both the signature and the encoded params are used to set
+the L<URI::query|query> string on the URI object
 
 =cut
 

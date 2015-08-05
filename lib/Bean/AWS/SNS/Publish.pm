@@ -28,8 +28,8 @@ only ASCII text of no more than 100 characters
 
 =item message
 
-The body of the message. Must be a character string that will
-encode to a UTF8 byte string less than 256 bytes
+The body of the message. Must be a byte string encoded as UTF8
+less than 256 bytes
 
 =back
 
