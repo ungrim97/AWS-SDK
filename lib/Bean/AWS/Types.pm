@@ -5,14 +5,26 @@ use warnings;
 
 use Type::Library
     -base,
-    -declare => qw/SNSMessage SNSSubjectStr SNSMessageStr SNSMessageFormat URL/;
+    -declare => qw/
+        SNSMessage
+        SNSMessageStr
+        SNSMessageSubject
+        SNSMessageJSON
+        SNSMessageFormat
+        SNSEndpoint
+        SNSScheme
+        AWSARN
+    /;
 use Type::Utils -all;
-use Types::Standard -types;
+use Types::Standard -types, qw/slurpy/;
+
+extends 'Bean::AWS::GenericTypes';
 
 use Bean::AWS::Exception;
-use URI;
+use JSON::MaybeXS;
 
-declare SNSSubjectStr,
+# Type Declarations
+declare SNSMessageSubject,
     as Str,
     where {/^[\w\d,!\?\.]/ && length $_ <= 100},
     message {
@@ -41,20 +53,52 @@ declare SNSMessageFormat,
 declare SNSMessage,
     as Dict[
         message => SNSMessageStr,
-        subject => Optional[SNSSubjectStr],
+        subject => Optional[SNSMessageSubject],
         format  => Optional[SNSMessageFormat],
-    ],
-    message {
-        if (ref $_ eq 'HASH' && !exists $_->{message}){
-            return Bean::AWS::Exception::InvalidArgs->new({
-                message => 'message is a required parameter'
-            })->as_string;
-         }
+    ];
+
+declare SNSScheme,
+    as Enum[qw/
+        http
+        https
+        email
+        email_json
+        sms
+        sqs
+        application
+        lambda
+    /];
+
+declare SNSMessageJSON,
+    as Dict[
+        default    => Str,
+        slurpy Map[SNSScheme, Str],
+    ];
+
+declare SNSEndpoint,
+    as Enum[qw/
+        EmailAddress
+        URL
+        PhoneNumber
+        AWSARN
+    /];
+
+declare AWSARN,
+    as Str,
+    where {
+        my ($type, $partition, $service, $region, $account, @resource) = split(':', $_);
+
+        return $type eq 'arn'
+            && $partition eq 'aws'
+            && $service
+            && $region
+            && $account
+            && $resource[0]
     };
 
-declare URL,
-    as InstanceOf['URI'];
-coerce URL,
-    from Str, via {URI->new($_)};
+# Type Coercions
+coerce SNSMessageStr,
+    from SNSMessageJSON,
+    via {encode_json($_)};
 
 1;
