@@ -36,12 +36,51 @@ See L<Bean::AWS::SNS#Supported Actions> for more information
 =cut
 
 use Moo;
-use Types::Standard qw/Str/;
+use Types::Standard qw/Str Dict HashRef Map slurpy/;
+use Bean::AWS::Types qw/URL AWSARN/;
 
 # Helper roles
 with 'Bean::AWS::Configurator';
 with 'Bean::AWS::SNS::Auth';
 with 'Bean::AWS::SNS::Requester';
+
+=head1 CONFIG
+
+The following must be defined in your config to use SNS services:
+
+=over
+
+=item aws_secret_key - Str
+
+=item aws_access_key - Str
+
+=item sns - HashRef
+
+=over
+
+=item url - Str/URI Object
+
+=item topics - HashRef of topic names and ARNs
+
+=back
+
+=back
+
+=cut
+
+has '+config' => (
+    isa => Dict[
+        aws_secret_key => Str,
+        aws_access_key => Str,
+        sns => Dict[
+            url    => URL,
+            topics => Map[Str, AWSARN],
+            slurpy HashRef,
+        ],
+        slurpy HashRef,
+    ],
+    coerce => 1,
+);
 
 =head1 ATTRIBUTES
 
