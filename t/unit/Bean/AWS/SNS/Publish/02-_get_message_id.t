@@ -2,10 +2,21 @@
 use Test::Most;
 
 use Bean::AWS::SNS;
-use FindBin;
+use Test::Warnings;
+
+my $config = {
+    sns => {
+        url => "http://sns.eu-west-1.amazonaws.com/",
+        topics      => {
+            test_topic => "arn:aws:sns:eu-west-1:868002146347:testtopic"
+        }
+    },
+    aws_access_key => "bar",
+    aws_secret_key => "foo",
+};
 
 subtest 'Valid XML' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config_dir => $FindBin::Bin);
+    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
 
     my $message_id = $publisher->_get_message_id(success_xml());
     ok($message_id, 'Found Message ID');
@@ -13,7 +24,7 @@ subtest 'Valid XML' => sub {
 };
 
 subtest 'Empty XML string' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config_dir => $FindBin::Bin);
+    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
 
     my $message_id = $publisher->_get_message_id('');
     ok(!$message_id, 'No message id found');

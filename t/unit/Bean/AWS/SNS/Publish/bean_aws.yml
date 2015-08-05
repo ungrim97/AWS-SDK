@@ -1,4 +1,0 @@
-aws_secret_key: foo
-aws_access_key: bar
-sns:
-    publish_url: http://sns.us-west-2.amazonaws.com/

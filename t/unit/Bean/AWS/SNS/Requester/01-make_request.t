@@ -2,18 +2,28 @@
 use Test::Most;
 
 use Bean::AWS::SNS;
-use FindBin;
 use Test::LWP::UserAgent;
 use Test::Warnings;
 
+my $config = {
+    sns => {
+        url => "http://sns.eu-west-1.amazonaws.com/",
+        topics      => {
+            test_topic => "arn:aws:sns:eu-west-1:868002146347:testtopic"
+        }
+    },
+    aws_access_key => "bar",
+    aws_secret_key => "foo",
+};
+
 subtest 'Successful Response' => sub {
     my $publisher = Bean::AWS::SNS->new(
-        topic       => 'test',
-        ua          => generate_test_useragent(),
-        config_dir  => $FindBin::Bin
+        topic   => 'test',
+        ua      => generate_test_useragent(),
+        config  => $config
     );
 
-    my $response = $publisher->make_request($publisher->config->{sns}{publish_url}.'/success', {Action => 'Publish'});
+    my $response = $publisher->make_request($publisher->config->{sns}{url}.'/success', {Action => 'Publish'});
 
     ok($response, 'make_request returned a response');
     is($response->code => 200, '  -> was successfull');

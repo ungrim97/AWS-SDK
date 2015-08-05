@@ -1,16 +1,25 @@
 #!/usr/bin/env perl
-use Bean::AWS::SNS;
+use Test::Most;
 
-use FindBin;
+use Bean::AWS::SNS;
+use Bean::AWS::Exception;
 use Test::Fatal;
 use Test::MockObject::Extends;
-use Test::Most;
 use Test::Warnings;
 
-use Bean::AWS::Exception;
+my $config = {
+    sns => {
+        url => "http://sns.eu-west-1.amazonaws.com/",
+        topics      => {
+            test_topic => "arn:aws:sns:eu-west-1:868002146347:testtopic"
+        }
+    },
+    aws_access_key => "bar",
+    aws_secret_key => "foo",
+};
 
 subtest 'Publish -> success' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config_dir => $FindBin::Bin);
+    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
     $publisher = Test::MockObject::Extends->new($publisher);
     $publisher->mock('make_request' => sub {return success_response()});
 
@@ -24,7 +33,7 @@ subtest 'Publish -> success' => sub {
 };
 
 subtest 'Publish -> fail' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config_dir => $FindBin::Bin);
+    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
     $publisher = Test::MockObject::Extends->new($publisher);
     $publisher->mock('make_request' => sub {return fail_response()});
 
@@ -41,7 +50,7 @@ subtest 'Publish -> fail' => sub {
 };
 
 subtest 'Publish -> invalid args' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config_dir => $FindBin::Bin);
+    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
     $publisher = Test::MockObject::Extends->new($publisher);
     $publisher->mock('make_request' => sub {return fail 'Should have died before now'});
 
@@ -76,7 +85,7 @@ subtest 'Publish -> invalid args' => sub {
             exception {
                 my $message_id = $publisher->publish({}),
             }.'',
-            re(qr/message is a required parameter/),
+            re(qr/requires key "message" to appear in hash/),
             'Publish Failed correctly'
         );
     };
