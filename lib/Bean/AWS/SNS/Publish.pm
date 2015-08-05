@@ -4,13 +4,15 @@ use Moo::Role;
 
 use Bean::AWS::Exception;
 use Bean::AWS::Types qw/SNSMessage/;
+use Data::Dumper;
 use Try::Tiny;
-use Types::Standard qw/Object/;
+use Types::Standard qw/Dict Object Optional/;
 use Type::Params qw/compile/;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
 
 requires 'config';
+requires 'make_request';
 
 =head1 INSTANCE METHODS
 
@@ -19,9 +21,11 @@ requires 'config';
 Takes a message hashref containing the keys. Returns he message_id returned
 or throws an exception
 
+L<http://docs.aws.amazon.com/sns/latest/api/API_Publish.html>
+
 =over
 
-=item subject
+=item subject (Optional)
 
 The subject of the message. Must be a character string containing
 only ASCII text of no more than 100 characters
@@ -29,7 +33,20 @@ only ASCII text of no more than 100 characters
 =item message
 
 The body of the message. Must be a byte string encoded as UTF8
-less than 256 bytes
+less than 256 bytes or a HashRef that can be encoded to JSON.
+If its a HashRef it must contain at least a default key containing the
+message to send.
+
+NOTE: That the size of the message is always 256 bytes regardless of if
+your sending as JSON to multiple endpoints or as a string
+
+=item format (Optional)
+
+If set, then it must have a value of json. This determines if different
+messages should be sent to different endpoint protocols. If set then the
+message will be encoded as JSON. If the message is a string then it will
+be used as the message for all end points. If the message is a HashRef
+then it will be encoded as is with the structure preserved
 
 =back
 
@@ -40,27 +57,20 @@ less than 256 bytes
     sub publish {
         my ($self, $input) = $check->(@_);
 
-        my $base_url = $self->config->{sns}{publish_url};
+        my $base_url = $self->config->{sns}{url};
+        my $format   = $input->{format};
 
-        unless ($base_url){
-            Bean::AWS::Exception::MissingConfig->throw({message => 'SNS Base URL undefined'});
-        }
-
-        my $format  = $input->{format};
-        my %params = (
+        my $response = $self->make_request($base_url, {
             Action   => 'Publish',
             Subject  => $input->{subject} || 'Bean::AWS::SNS Message',
             Message  => $input->{message},
             TopicArn => $self->topic_arn,
             $format ? (MessageStructure => $format) : (),
-        );
-
-        my $response = $self->make_request($base_url, \%params);
+        });
 
         if ($response->is_success){
             my $message_id = $self->_get_message_id($response->decoded_content);
         } else {
-            use Data::Dumper;
             Bean::AWS::Exception::FailedRequest->throw({message => Dumper $response});
         }
     }
@@ -81,5 +91,11 @@ sub _get_message_id {
         return undef
     }
 }
+
+=head1 SEE ALSO
+
+L<http://docs.aws.amazon.com/sns/latest/api/API_Publish.html>
+L<http://docs.aws.amazon.com/sns/latest/api/CommonParameters.html>
+L<http://docs.aws.amazon.com/sns/latest/api/CommonErrors.html>
 
 1;

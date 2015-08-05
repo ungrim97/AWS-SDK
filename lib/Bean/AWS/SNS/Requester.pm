@@ -26,7 +26,6 @@ use Moo::Role;
 use Bean::AWS::Exception;
 use Bean::AWS::Types qw/URL/;
 use LWP::UserAgent;
-use URI;
 use URI::Escape qw/uri_escape_utf8 uri_escape/;
 use Type::Params qw/compile/;
 use Types::Standard qw/InstanceOf Optional Object HashRef/;
@@ -91,7 +90,7 @@ Returns a HTTP::Response object or throws and exception
             # TODO: Do we need to handle failed (non 2xx) responses? Retry?
         } catch {
             # TODO: Handle aborted requests
-            Bean::AWS::Exception::FailedRequest->new(content => $_)->throw
+            Bean::AWS::Exception::FailedRequest->throw({message => $_});
         }
     }
 }
