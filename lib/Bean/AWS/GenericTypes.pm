@@ -9,12 +9,12 @@ use Type::Library
     -declare => qw/URL PhoneNumber EmailAddress/;
 use Type::Utils -all;
 use Types::Standard -types;
-use Number::Phone::US qw/validate_number/;
 use URI;
+
 
 declare PhoneNumber,
     as Str,
-    where {validate_number($_)};
+    where {$_ =~ m#1[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}#};
 
 declare EmailAddress,
     as Str,
