@@ -1,8 +1,10 @@
 package Bean::AWS;
 
+# ABSTRACT - SDK for AWS Services
+
 =head1 NAME
 
-Bean::AWS
+Bean::AWS - SDK for AWS Services
 
 =head1 SUMMARY
 
