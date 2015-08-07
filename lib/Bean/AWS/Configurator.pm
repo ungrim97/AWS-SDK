@@ -25,7 +25,8 @@ A simple Moo Role to handle loading of the config file for Bean::AWS
 use Moo::Role;
 
 use Bean::AWS::Exception;
-use Config::JFDI;
+use File::Slurp qw/read_file/;
+use JSON qw/decode_json/;
 use Types::Standard qw/HashRef/;
 
 =head1 ATTRIBUTES
@@ -42,16 +43,17 @@ Must be provided if no L<Bean::AWS::Configurator#config|config> hashref is provi
 
 has config_dir => (
     is       => 'ro',
-    isa      => sub { die "$_[0] directory doesn't exist" unless -d $_[0] },
+    isa      => sub {
+        die "$_[0] directory doesn't exist or doesn't contain a valid config file"
+          unless -d $_[0] && -e $_[0].'/bean_aws.json';
+    },
 );
 
 =head2 config
 
 Returns a hashref containing the config details. If not provided as part of the
 instantiation of the consuming object then these will be loaded from a file
-called 'bean_aws.*' from the L<Bean::AWS::Configurator#config_dir|config_dir>
-it will be merged with the results of any 'bean_aws_local.*' found in the same
-dir with the _local version taking precedent.
+called 'bean_aws.json' from the L<Bean::AWS::Configurator#config_dir|config_dir>
 
 =cut
 
@@ -65,7 +67,7 @@ has config => (
 sub _build_config {
     my ($self) = @_;
 
-    my $config = Config::JFDI->open(name => 'bean_aws', path => $self->config_dir);
+    return decode_json(scalar read_file($self->config_dir.'/bean_aws.json'));
 }
 
 sub BUILDARGS {
@@ -74,7 +76,7 @@ sub BUILDARGS {
     my $args = @args % 2 == 1 ? $args[0] : {@args};
 
     if (!exists $args->{config} && !exists $args->{config_dir}){
-        Bean::AWS::Exception::MissingArgs->throw({message => 'Missing config_dir param'});
+        Bean::AWS::Exception::InvalidArgs->throw({message => 'Missing config_dir param'});
     }
 
     return $args;
