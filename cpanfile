@@ -1,5 +1,6 @@
 requires 'Config::JFDI';
 requires 'Data::Dumper';
+requires 'Email::Valid';
 requires 'HTTP::Message';
 requires 'HTTP::Tiny';
 requires 'Moo';

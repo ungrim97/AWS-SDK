@@ -3,13 +3,12 @@ package Bean::AWS::GenericTypes;
 use strict;
 use warnings;
 
+use Email::Valid;
 use Type::Library
     -base,
     -declare => qw/URL PhoneNumber EmailAddress/;
 use Type::Utils -all;
 use Types::Standard -types;
-
-use Email::Address;
 use Number::Phone::US qw/validate_number/;
 use URI;
 
@@ -19,7 +18,7 @@ declare PhoneNumber,
 
 declare EmailAddress,
     as Str,
-    where {$_ =~ /^$Email::Address::mailbox$/};
+    where {Email::Valid->address($_)};
 
 declare URL,
     as InstanceOf['URI'];
