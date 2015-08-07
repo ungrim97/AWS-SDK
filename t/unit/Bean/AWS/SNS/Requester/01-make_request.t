@@ -2,7 +2,7 @@
 use Test::Most;
 
 use Bean::AWS::SNS;
-use Test::LWP::UserAgent;
+use Test::MockObject::Extends;
 use Test::Warnings;
 
 my $config = {
@@ -33,13 +33,31 @@ subtest 'Successful Response' => sub {
 done_testing;
 
 sub generate_test_useragent {
-    my $useragent = Test::LWP::UserAgent->new();
-    $useragent->map_response(
-        qr#/success# => HTTP::Response->new('200', 'OK', ['Content-Type' => 'text/xml'], success_xml()),
-    );
-    $useragent->map_response(
-        qr#/fail# => HTTP::Response->new('500', 'InternalFailure', ['Content-Type' => 'text/plain'], ''),
-    );
+    my $useragent = HTTP::Tiny->new();
+    my $mocked_ua = Test::MockObject::Extends->new($useragent);
+
+    $mocked_ua->mock(post => sub {
+        my $url = $_[1];
+        if ($url =~ m#/success#){
+            return {
+                status  => '200',
+                reason  => 'OK',
+                headers => {
+                    'Content-Type' => 'text/xml'
+                },
+                content => success_xml(),
+            };
+        } else {
+            return {
+                status  => '500',
+                reason  => 'InternalFailure',
+                headers => {
+                    'Content-Type' => 'text/plain'
+                },
+                content => ''
+            };
+        }
+    });
     return $useragent;
 }
 

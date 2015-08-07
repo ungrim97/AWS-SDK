@@ -25,7 +25,8 @@ use Moo::Role;
 
 use Bean::AWS::Exception;
 use Bean::AWS::Types qw/URL/;
-use LWP::UserAgent;
+use HTTP::Response;
+use HTTP::Tiny;
 use URI::Escape qw/uri_escape_utf8 uri_escape/;
 use Type::Params qw/compile/;
 use Types::Standard qw/InstanceOf Optional Object HashRef/;
@@ -60,9 +61,9 @@ instance of the LWP::UserAgent class (or subclasses)
 
 has ua => (
     is      => 'ro',
-    isa     => InstanceOf['LWP::UserAgent'],
+    isa     => InstanceOf['HTTP::Tiny'],
     lazy    => 1,
-    default => sub {LWP::UserAgent->new()}
+    default => sub {HTTP::Tiny->new()}
 );
 
 =head1 INSTANCE METHODS
@@ -85,7 +86,13 @@ Returns a HTTP::Response object or throws and exception
         my $signed_url = $self->sign_request($url, $params);
 
         return try {
-            return $self->ua->post($signed_url);
+            my $response = $self->ua->post($signed_url);
+            return HTTP::Response->new(
+                $response->{status},
+                $response->{reason},
+                [%{$response->{headers}}],
+                $response->{content},
+            );
 
             # TODO: Do we need to handle failed (non 2xx) responses? Retry?
         } catch {
