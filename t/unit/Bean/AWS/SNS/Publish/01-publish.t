@@ -11,7 +11,7 @@ my $config = {
     sns => {
         url => "http://sns.eu-west-1.amazonaws.com/",
         topics      => {
-            test_topic => "arn:aws:sns:eu-west-1:868002146347:testtopic"
+            test => "arn:aws:sns:eu-west-1:868002146347:testtopic"
         }
     },
     aws_access_key => "bar",

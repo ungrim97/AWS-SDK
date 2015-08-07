@@ -36,8 +36,9 @@ See L<Bean::AWS::SNS#Supported Actions> for more information
 =cut
 
 use Moo;
-use Types::Standard qw/Str Dict HashRef Map slurpy/;
 use Bean::AWS::Types qw/URL AWSARN/;
+use Bean::AWS::Exception;
+use Types::Standard qw/Str Dict HashRef Map slurpy/;
 
 # Helper roles
 with 'Bean::AWS::Configurator';
@@ -134,7 +135,10 @@ Will look for the keys sns -> topics -> $self->topic
 sub topic_arn {
     my ($self) = @_;
 
-    return $self->config->{sns}{topics}{$self->topic};
+    return $self->config->{sns}{topics}{$self->topic} ||
+        Bean::AWS::Exception::InvalidArgs->throw({
+            message => 'Unable to retrieve Topic ARN for '.$self->topic
+        });
 }
 
 1;

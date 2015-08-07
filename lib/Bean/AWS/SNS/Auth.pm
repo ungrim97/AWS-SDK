@@ -2,8 +2,11 @@ package Bean::AWS::SNS::Auth;
 
 use Moo::Role;
 
-use Digest::SHA qw/hmac_sha256_base64/;
+use Bean::AWS::GenericTypes qw/URL/;
 use DateTime;
+use Digest::SHA qw/hmac_sha256_base64/;
+use Type::Params qw/compile/;
+use Types::Standard qw/Object/;
 use URI::Escape qw/uri_escape/;
 
 =head1 REQUIRED METHODS
@@ -90,17 +93,35 @@ sub auth_params {
 
 =head2 generate_signature (URI)
 
-Generates a string that represents the encryption string of
+Takes a URI object or valid url for creating one then
+generates a string that represents the encryption string of
 the encoded request against the AWS Secret Key
+
+The encryption method used to generate the signature is based on
+the Signature Version set. To provide alternative encryption methods
+provide a Method called 'encrypt_*' where * is the value set for
+signature_method. This method will recieve a single argument in the
+form of a URI object appropriate to the URL passed to generate_signature
 
 =cut
 
-sub generate_signature {
-    my ($self, $url) = @_;
+{
+    my $check = compile(Object, URL);
+    sub generate_signature {
+        my ($self, $url) = $check->(@_);
 
-    my $signature;
-    if ($self->signature_method eq 'HmacSHA256'){
-        $signature = hmac_sha256_base64(
+        if (my $encrypt_method = $self->can("encrypt_".$self->signature_method)){
+            return $self->$encrypt_method($url);
+        } else {
+            Bean::AWS::Exception::InvalidArgs->throw({
+                message => 'No Encryption method found for '.$self->signature_method
+            });
+        }
+    }
+
+    sub encrypt_HmacSHA256 {
+        my ($self, $url) = $check->(@_);
+        my $signature = hmac_sha256_base64(
             join("\n", (
                 "POST",
                 $url->host,
@@ -109,12 +130,10 @@ sub generate_signature {
             )),
             $self->config->{aws_secret_key}
         );
-        while (length($signature) % 4){
-            $signature .= '=';
-        }
-    }
 
-    return $signature;
+        $signature .= '=' while length($signature) % 4;
+        return $signature;
+    }
 }
 
 1;
