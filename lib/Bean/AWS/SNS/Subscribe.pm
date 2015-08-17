@@ -11,7 +11,7 @@ requires 'make_request';
 
 =head2 subscribe (ENDPOINT, SCHEME)
 
-Subscribe endpoints for given shcmes to the topic.
+Subscribe endpoints for given schemes to the topic.
 
 Returns a SubscriptionArn if created or throws and exception
 
