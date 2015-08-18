@@ -21,7 +21,7 @@ use Types::Standard -types, qw/slurpy/;
 extends 'Bean::AWS::GenericTypes';
 
 use Bean::AWS::Exception;
-use JSON::MaybeXS;
+use JSON qw/encode_json/;
 
 # Type Declarations
 declare SNSMessageSubject,

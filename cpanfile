@@ -2,6 +2,7 @@ requires 'Data::Dumper';
 requires 'Email::Valid';
 requires 'HTTP::Message';
 requires 'HTTP::Tiny';
+requires 'JSON';
 requires 'Moo';
 requires 'Throwable';
 requires 'Type::Tiny';
