@@ -12,7 +12,7 @@ Bean::AWS - SDK for AWS Services
 
 =head1 DESCRIPTION
 
-Provids an SDK (Software development kit) for the various Amazon APIs
+Provides an SDK (Software development kit) for the various Amazon APIs
 
 =cut
 
