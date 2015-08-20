@@ -1,0 +1,11 @@
+{{$NEXT}}
+    - Added SNS SDK
+        - Added Configurator Role for config parsing
+        - Added SNS::Publish Role to handle the SNS Publish action
+        - Added SNS::Subscribe Role to handle the SNS Subscribe action
+        - Added SNS::Requester Role to handle API requests for AWS SNS
+        - Added Exception class for throwable exceptions
+        - Added Auth Role for signing AWS URLS
+        - Added GenericTypes type library for Generic types (URL/Email etc)
+            used by AWS
+        - Added Types type libary containg AWS specific types

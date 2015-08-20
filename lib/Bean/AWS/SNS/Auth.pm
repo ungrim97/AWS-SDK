@@ -37,7 +37,7 @@ has signature_version => (is => 'ro', lazy => 1, default => 2);
 Stores the name of the Encryption method by which the digital Signature
 is generated
 
-Default: HmacSH256
+Default: HmacSHA256
 
 =cut
 
@@ -73,10 +73,10 @@ has api_version => (is => 'ro', lazy => 1, default => '2010-03-31');
 
 =head2 auth_params
 
-Returns a HashRef of key value pairs of the specific query params
+Returns a HashRef of key value pairs of the specific query parameters
 expected by Amazon to Authenticate the request.
 
-SignatureVersion, SignatureMethod, Timestamp, Versin, AWSAcessKeyID
+SignatureVersion, SignatureMethod, Timestamp, Version, AWSAccessKeyID
 
 =cut
 
@@ -100,7 +100,7 @@ the encoded request against the AWS Secret Key
 The encryption method used to generate the signature is based on
 the Signature Version set. To provide alternative encryption methods
 provide a Method called 'encrypt_*' where * is the value set for
-signature_method. This method will recieve a single argument in the
+signature_method. This method will receive a single argument in the
 form of a URI object appropriate to the URL passed to generate_signature
 
 =cut

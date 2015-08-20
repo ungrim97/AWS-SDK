@@ -1,6 +1,7 @@
 package Bean::AWS::Exception;
 
 package Bean::AWS::Exception::Base {
+
     use Moo;
     use overload qw/""/ => 'as_string', fallback => 1;
 
@@ -10,6 +11,7 @@ package Bean::AWS::Exception::Base {
 };
 
 package Bean::AWS::Exception::MissingConfig {
+
     use Moo;
 
     extends 'Bean::AWS::Exception::Base';
@@ -20,6 +22,7 @@ package Bean::AWS::Exception::MissingConfig {
 };
 
 package Bean::AWS::Exception::InvalidArgs {
+
     use Moo;
 
     extends 'Bean::AWS::Exception::Base';
@@ -30,6 +33,7 @@ package Bean::AWS::Exception::InvalidArgs {
 };
 
 package Bean::AWS::Exception::FailedRequest {
+
     use Moo;
 
     extends 'Bean::AWS::Exception::Base';

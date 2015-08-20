@@ -89,7 +89,7 @@ has '+config' => (
 
 A string representing the name of a topic as it appears in
 the config. Provides a more human readable reference to the
-topic for use in Loggings. Must be present in the config.
+topic for use in logging. Must be present in the config.
 
 =cut
 
@@ -110,7 +110,7 @@ Publish a message to an SNS Topic
 
 =item Subscribe
 
-Subscribe an Endpoint to a SNS Topic in order to recieve messages
+Subscribe an Endpoint to a SNS Topic in order to receive messages
 
 =cut
 

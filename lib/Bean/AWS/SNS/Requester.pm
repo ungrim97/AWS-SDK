@@ -105,7 +105,7 @@ Returns a HTTP::Response object or throws and exception
 =head2 encode_params (\%params)
 
 Takes a hashref of query parameter key value pairs encoded as a
-UTF8 Byte string then escapes any metacharacters. Expects unencoded
+UTF8 Byte string then escapes any metacharacters. Expect non encoded
 characters. Returns a string suitable as the query part of a URL.
 
 =cut
@@ -124,9 +124,9 @@ AWS SNS expects all calls to its API to be signed. The signature
 is the result of HMAC_SHA256 encrypting the encoded URL query string.
 
 This method takes a URI Object representing the root Url and a hashref of
-params. URI escapes the params along with the required
+parameters. URI escapes the parameters along with the required
 L<Bean::AWS::SNS::Auth::auth_params|auth_params> and generates a digital
-signature before both the signature and the encoded params are used to set
+signature before both the signature and the encoded parameters are used to set
 the L<URI::query|query> string on the URI object
 
 =cut
