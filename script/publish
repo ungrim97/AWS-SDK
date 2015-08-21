@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Bean::AWS::SNS;
+use Getopt::Long;
+
+GetOptions(
+    'message=s'     => \(my $message = ''),
+    'subject=s'     => \(my $subject),
+    'topic=s'       => \(my $topic),
+    'config_dir=s'  => \(my $config_dir = $ENV{HOME}),
+);
+
+my $sns = Bean::AWS::SNS->new(topic => $topic, config_dir => $config_dir);
+
+my $message_id = $sns->publish({
+    message => $message,
+    $subject ? (subject => $subject) : (),
+});
+
+print "Message Sent: $message_id";
