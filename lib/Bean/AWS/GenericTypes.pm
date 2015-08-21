@@ -21,7 +21,7 @@ declare EmailAddress,
     where {Email::Valid->address($_)};
 
 declare URL,
-    as InstanceOf['URI'];
+    as HasMethods[qw/host query path/];
 coerce URL,
     from Str, via {URI->new($_)};
 

@@ -3,6 +3,7 @@ package Bean::AWS::SNS::Auth;
 use Moo::Role;
 
 use Bean::AWS::GenericTypes qw/URL/;
+use Bean::AWS::Exception;
 use DateTime;
 use Digest::SHA qw/hmac_sha256_base64/;
 use Type::Params qw/compile/;
