@@ -55,7 +55,7 @@ requires 'generate_signature';
 =head2 ua
 
 A UserAgent for making the request. Must be an
-instance of the LWP::UserAgent class (or subclasses)
+instance of the HTTP::Tiny class (or subclasses)
 
 =cut
 
