@@ -1,12 +1,8 @@
 package Bean::AWS::Configurator;
-$Bean::AWS::Configurator::VERSION = '0.002';
+
 =head1 NAME
 
 Bean::AWS::Configuration - Config handler for Bean::AWS
-
-=head1 VERSION
-
-0.001
 
 =head1 SYNOPSIS
 
