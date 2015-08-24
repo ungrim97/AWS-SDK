@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.002     2015-08-21 16:28:38+01:00 Europe/London
     - Added SNS SDK
         - Added Configurator Role for config parsing
         - Added SNS::Publish Role to handle the SNS Publish action
