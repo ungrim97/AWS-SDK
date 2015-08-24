@@ -1,5 +1,5 @@
 package Bean::AWS::Configurator;
-
+$Bean::AWS::Configurator::VERSION = '0.002';
 =head1 NAME
 
 Bean::AWS::Configuration - Config handler for Bean::AWS
@@ -25,7 +25,7 @@ A simple Moo Role to handle loading of the config file for Bean::AWS
 use Moo::Role;
 
 use Bean::AWS::Exception;
-use File::Slurp qw/read_file/;
+use Path::Tiny qw/path/;
 use JSON qw/decode_json/;
 use Types::Standard qw/HashRef/;
 
@@ -55,6 +55,12 @@ Returns a hashref containing the config details. If not provided as part of the
 instantiation of the consuming object then these will be loaded from a file
 called 'bean_aws.json' from the L<Bean::AWS::Configurator#config_dir|config_dir>
 
+NOTE: The file is read with a binmode of ':unix:encoding(UTF-8)'
+
+SEE ALSO
+
+L<Path::Tiny#slurp>
+
 =cut
 
 has config => (
@@ -67,7 +73,8 @@ has config => (
 sub _build_config {
     my ($self) = @_;
 
-    return decode_json(scalar read_file($self->config_dir.'/bean_aws.json'));
+    my $config_file = path($self->config_dir.'/bean_aws.json');
+    return decode_json($config_file->slurp_utf8);
 }
 
 sub BUILDARGS {
