@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use Test::Most;
 
-use Bean::AWS::SNS;
+use AWS::SDK::SNS;
 use Test::Warnings;
 
 my $config = {
@@ -16,7 +16,7 @@ my $config = {
 };
 
 subtest 'Valid XML' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
+    my $publisher = AWS::SDK::SNS->new(topic => 'test', config => $config);
 
     my $message_id = $publisher->_get_message_id(success_xml());
     ok($message_id, 'Found Message ID');
@@ -24,7 +24,7 @@ subtest 'Valid XML' => sub {
 };
 
 subtest 'Empty XML string' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
+    my $publisher = AWS::SDK::SNS->new(topic => 'test', config => $config);
 
     my $message_id = $publisher->_get_message_id('');
     ok(!$message_id, 'No message id found');

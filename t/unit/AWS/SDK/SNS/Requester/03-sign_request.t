@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use Test::Most;
 
-use Bean::AWS::SNS;
+use AWS::SDK::SNS;
 use Test::MockObject::Extends;
 use Test::Warnings;
 use URI;
@@ -18,7 +18,7 @@ my $config = {
 };
 
 subtest 'hmac_sha256' => sub {
-    my $sns = Bean::AWS::SNS->new(config => $config, topic => 'test_topic');
+    my $sns = AWS::SDK::SNS->new(config => $config, topic => 'test_topic');
     my $mocked_sns = Test::MockObject::Extends->new($sns);
     $mocked_sns->mock(encode_params => sub {return join '&', map {"$_=".$_[1]{$_}} sort keys %{$_[1]}});
     $mocked_sns->mock(generate_signature => sub {return 'EncryptedSignature'});

@@ -1,9 +1,9 @@
-package Bean::AWS::SNS::Publish;
+package AWS::SDK::SNS::Publish;
 
 use Moo::Role;
 
-use Bean::AWS::Exception;
-use Bean::AWS::Types qw/SNSMessage/;
+use AWS::SDK::Exception;
+use AWS::SDK::Types qw/SNSMessage/;
 use Data::Dumper;
 use Try::Tiny;
 use Types::Standard qw/Dict Object Optional/;
@@ -62,7 +62,7 @@ then it will be encoded as is with the structure preserved
 
         my $response = $self->make_request($base_url, {
             Action   => 'Publish',
-            Subject  => $input->{subject} || 'Bean::AWS::SNS Message',
+            Subject  => $input->{subject} || 'AWS::SDK::SNS Message',
             Message  => $input->{message},
             TopicArn => $self->topic_arn,
             $format ? (MessageStructure => $format) : (),
@@ -71,7 +71,7 @@ then it will be encoded as is with the structure preserved
         if ($response->is_success){
             my $message_id = $self->_get_message_id($response->decoded_content);
         } else {
-            Bean::AWS::Exception::FailedRequest->throw({message => Dumper $response});
+            AWS::SDK::Exception::FailedRequest->throw({message => Dumper $response});
         }
     }
 }

@@ -1,12 +1,12 @@
-package Bean::AWS::SNS::Requester;
+package AWS::SDK::SNS::Requester;
 
 =head1 NAME
 
-Bean::AWS::SNS::Requester - Role to handle making requests to SNS
+AWS::SDK::SNS::Requester - Role to handle making requests to SNS
 
 =head1 SUMMARY
 
-    with 'Bean::AWS::SNS::Requester';
+    with 'AWS::SDK::SNS::Requester';
 
     ...
 
@@ -23,8 +23,8 @@ Amazon Simple Notification Service
 
 use Moo::Role;
 
-use Bean::AWS::Exception;
-use Bean::AWS::Types qw/URL/;
+use AWS::SDK::Exception;
+use AWS::SDK::Types qw/URL/;
 use HTTP::Response;
 use HTTP::Tiny;
 use URI::Escape qw/uri_escape_utf8 uri_escape/;
@@ -72,7 +72,7 @@ has ua => (
 
 Merges the provided optional query parameters with the
 required Auth Parameters from config, escapes them and
-then makes a request to the AWS SNS API at BASE_URL with
+then makes a request to the AWS::SDK SNS API at BASE_URL with
 the resulting query string.
 
 Returns a HTTP::Response object or throws and exception
@@ -97,7 +97,7 @@ Returns a HTTP::Response object or throws and exception
             # TODO: Do we need to handle failed (non 2xx) responses? Retry?
         } catch {
             # TODO: Handle aborted requests
-            Bean::AWS::Exception::FailedRequest->throw({message => $_});
+            AWS::SDK::Exception::FailedRequest->throw({message => $_});
         }
     }
 }
@@ -120,12 +120,12 @@ sub encode_params {
 
 =head2 sign_request (URI, \%params)
 
-AWS SNS expects all calls to its API to be signed. The signature
+AWS::SDK SNS expects all calls to its API to be signed. The signature
 is the result of HMAC_SHA256 encrypting the encoded URL query string.
 
 This method takes a URI Object representing the root Url and a hashref of
 parameters. URI escapes the parameters along with the required
-L<Bean::AWS::SNS::Auth::auth_params|auth_params> and generates a digital
+L<AWS::SDK::SNS::Auth::auth_params|auth_params> and generates a digital
 signature before both the signature and the encoded parameters are used to set
 the L<URI::query|query> string on the URI object
 

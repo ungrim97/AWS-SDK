@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use Test::Most;
 
-use Bean::AWS::SNS;
+use AWS::SDK::SNS;
 use Test::MockObject::Extends;
 use Test::Warnings;
 
@@ -17,7 +17,7 @@ my $config = {
 };
 
 subtest 'Successful Response' => sub {
-    my $publisher = Bean::AWS::SNS->new(
+    my $publisher = AWS::SDK::SNS->new(
         topic   => 'test',
         ua      => generate_test_useragent(),
         config  => $config

@@ -1,9 +1,9 @@
-package Bean::AWS::SNS::Auth;
+package AWS::SDK::SNS::Auth;
 
 use Moo::Role;
 
-use Bean::AWS::GenericTypes qw/URL/;
-use Bean::AWS::Exception;
+use AWS::SDK::GenericTypes qw/URL/;
+use AWS::SDK::Exception;
 use DateTime;
 use Digest::SHA qw/hmac_sha256_base64/;
 use Type::Params qw/compile/;
@@ -25,7 +25,7 @@ requires 'config';
 
 =head2 signature_version
 
-Stores the current AWS Signature Version in use.
+Stores the current AWS::SDK Signature Version in use.
 
 Default: 2
 
@@ -96,7 +96,7 @@ sub auth_params {
 
 Takes a URI object or valid url for creating one then
 generates a string that represents the encryption string of
-the encoded request against the AWS Secret Key
+the encoded request against the AWS::SDK Secret Key
 
 The encryption method used to generate the signature is based on
 the Signature Version set. To provide alternative encryption methods
@@ -114,7 +114,7 @@ form of a URI object appropriate to the URL passed to generate_signature
         if (my $encrypt_method = $self->can("encrypt_".$self->signature_method)){
             return $self->$encrypt_method($url);
         } else {
-            Bean::AWS::Exception::InvalidArgs->throw({
+            AWS::SDK::Exception::InvalidArgs->throw({
                 message => 'No Encryption method found for '.$self->signature_method
             });
         }

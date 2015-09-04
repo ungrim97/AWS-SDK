@@ -4,17 +4,17 @@ use Test::Most;
 use Test::Warnings;
 
 {
-    package TestsFor::Bean::AWS::SNS::Auth;
+    package TestsFor::AWS::SDK::SNS::Auth;
 
     use Moo;
 
-    use Bean::AWS::GenericTypes qw/URL/;
+    use AWS::SDK::GenericTypes qw/URL/;
     use Test::Most;
     use Safe::Isa;
 
     sub config {}
 
-    with 'Bean::AWS::SNS::Auth';
+    with 'AWS::SDK::SNS::Auth';
 
     sub encrypt_test {
         my ($self, $url) = @_;
@@ -28,7 +28,7 @@ use Test::Warnings;
 
 subtest 'generate signature' => sub {
     plan tests => 5;
-    my $signer = TestsFor::Bean::AWS::SNS::Auth->new(signature_method => 'test');
+    my $signer = TestsFor::AWS::SDK::SNS::Auth->new(signature_method => 'test');
 
     my $url = 'http://this.is.a.test.url.com?some=query&params=here';
     my $signed_url = $signer->generate_signature($url);
@@ -37,7 +37,7 @@ subtest 'generate signature' => sub {
 
 subtest 'generate signature - no encrypt method' => sub {
     plan tests => 1;
-    my $signer = TestsFor::Bean::AWS::SNS::Auth->new(signature_method => 'invalid');
+    my $signer = TestsFor::AWS::SDK::SNS::Auth->new(signature_method => 'invalid');
 
     cmp_deeply(
         exception {$signer->generate_signature('http://this.is.a.test.url.com?some=query&params=here')},
@@ -48,7 +48,7 @@ subtest 'generate signature - no encrypt method' => sub {
 
 subtest 'generate signature - invalid url' => sub {
     plan tests => 1;
-    my $signer = TestsFor::Bean::AWS::SNS::Auth->new();
+    my $signer = TestsFor::AWS::SDK::SNS::Auth->new();
 
     cmp_deeply(
         exception {$signer->generate_signature('This is not a valid url string')}.'',

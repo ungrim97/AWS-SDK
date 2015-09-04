@@ -1,4 +1,4 @@
-package Bean::AWS::Types;
+package AWS::SDK::Types;
 
 use strict;
 use warnings;
@@ -18,9 +18,9 @@ use Type::Library
 use Type::Utils -all;
 use Types::Standard -types, qw/slurpy/;
 
-extends 'Bean::AWS::GenericTypes';
+extends 'AWS::SDK::GenericTypes';
 
-use Bean::AWS::Exception;
+use AWS::SDK::Exception;
 use JSON qw/encode_json/;
 
 # Type Declarations
@@ -28,7 +28,7 @@ declare SNSMessageSubject,
     as Str,
     where {/^[\w\d,!\?\.]/ && length $_ <= 100},
     message {
-        Bean::AWS::Exception::InvalidArgs->new({
+        AWS::SDK::Exception::InvalidArgs->new({
             message => "SNS Message subject is invalid for sending via SNS"
         })->as_string;
     };
@@ -37,7 +37,7 @@ declare SNSMessageStr,
     as Str,
     where {length $_ <= 256000},
     message {
-        Bean::AWS::Exception::InvalidArgs->new({
+        AWS::SDK::Exception::InvalidArgs->new({
             message => "SNS Message content is too long for sending via SNS"
         })->as_string;
     };
@@ -45,7 +45,7 @@ declare SNSMessageStr,
 declare SNSMessageFormat,
     as Enum[qw/json/],
     message {
-        Bean::AWS::Exception::InvalidArgs->new({
+        AWS::SDK::Exception::InvalidArgs->new({
             message => "SNS Message Format must be json if used"
         })->as_string;
     };
@@ -80,7 +80,7 @@ declare SNSEndpoint,
         EmailAddress
         URL
         PhoneNumber
-        AWSARN
+        AWS::SDKARN
     /];
 
 declare AWSARN,

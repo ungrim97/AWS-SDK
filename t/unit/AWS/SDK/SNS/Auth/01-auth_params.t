@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use Test::Most;
 
-use Bean::AWS::SNS;
+use AWS::SDK::SNS;
 
 my $config = {
     sns => {
@@ -15,7 +15,7 @@ my $config = {
 };
 
 subtest 'Params' => sub {
-    my $sns = Bean::AWS::SNS->new(timestamp => '2015-08-06T15:00:00Z', config => $config, topic => 'test');
+    my $sns = AWS::SDK::SNS->new(timestamp => '2015-08-06T15:00:00Z', config => $config, topic => 'test');
 
     my $auth_params = $sns->auth_params;
 

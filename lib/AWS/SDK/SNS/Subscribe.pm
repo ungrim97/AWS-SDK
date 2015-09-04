@@ -1,8 +1,8 @@
-package Bean::AWS::SNS::Subscribe;
+package AWS::SDK::SNS::Subscribe;
 
 use Moo::Role;
 
-use Bean::AWS::Types qw/SNSEndpoint SNSScheme/;
+use AWS::SDK::Types qw/SNSEndpoint SNSScheme/;
 use Type::Params;
 
 requires 'make_request';

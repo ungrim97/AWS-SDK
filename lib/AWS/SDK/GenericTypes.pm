@@ -1,4 +1,4 @@
-package Bean::AWS::GenericTypes;
+package AWS::SDK::GenericTypes;
 
 use strict;
 use warnings;

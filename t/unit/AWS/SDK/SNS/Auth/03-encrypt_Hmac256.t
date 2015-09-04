@@ -5,17 +5,17 @@ use Digest::SHA qw/hmac_sha256_base64/;
 use Test::Fatal;
 
 {
-    package TestsFor::Bean::AWS::SNS::Auth;
+    package TestsFor::AWS::SDK::SNS::Auth;
 
     use Moo;
 
     sub config {return {aws_secret_key => 'testkey'}}
 
-    with 'Bean::AWS::SNS::Auth';
+    with 'AWS::SDK::SNS::Auth';
 }
 
 subtest 'HmacSHA256 signature' => sub {
-    my $signer = TestsFor::Bean::AWS::SNS::Auth->new();
+    my $signer = TestsFor::AWS::SDK::SNS::Auth->new();
 
     my $url = 'http://this.is.a.test.url.com/?with=a&query=string';
     my $signature = $signer->encrypt_HmacSHA256($url);
@@ -29,7 +29,7 @@ subtest 'HmacSHA256 signature' => sub {
 
 subtest 'generate signature - invalid url' => sub {
     plan tests => 1;
-    my $signer = TestsFor::Bean::AWS::SNS::Auth->new();
+    my $signer = TestsFor::AWS::SDK::SNS::Auth->new();
 
     cmp_deeply(
         exception {$signer->generate_signature('This is not a valid url string')}.'',

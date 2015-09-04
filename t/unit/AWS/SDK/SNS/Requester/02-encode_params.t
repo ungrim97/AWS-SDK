@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use Test::Most;
 
-use Bean::AWS::SNS;
+use AWS::SDK::SNS;
 use Encode qw/encode_utf8/;
 use Test::Warnings;
 
@@ -17,7 +17,7 @@ my $config = {
 };
 
 subtest 'encode - ASCII' => sub {
-    my $sns = Bean::AWS::SNS->new(topic => 'test_topic', config => $config);
+    my $sns = AWS::SDK::SNS->new(topic => 'test_topic', config => $config);
 
     my $encoded_query = $sns->encode_params({
         foo => 'bar',
@@ -28,7 +28,7 @@ subtest 'encode - ASCII' => sub {
 };
 
 subtest 'encode - UTF8 bytes' => sub {
-    my $sns = Bean::AWS::SNS->new(topic => 'test topic', config => $config);
+    my $sns = AWS::SDK::SNS->new(topic => 'test topic', config => $config);
 
     my $encoded_query = $sns->encode_params({
         foo => encode_utf8("\x{2f96}"),

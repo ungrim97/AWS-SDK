@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 use Test::Most;
 
-use Bean::AWS::SNS;
-use Bean::AWS::Exception;
+use AWS::SDK::SNS;
+use AWS::SDK::Exception;
 use Test::Fatal;
 use Test::MockObject::Extends;
 use Test::Warnings;
@@ -19,7 +19,7 @@ my $config = {
 };
 
 subtest 'Publish -> success' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
+    my $publisher = AWS::SDK::SNS->new(topic => 'test', config => $config);
     $publisher = Test::MockObject::Extends->new($publisher);
     $publisher->mock('make_request' => sub {return success_response()});
 
@@ -33,7 +33,7 @@ subtest 'Publish -> success' => sub {
 };
 
 subtest 'Publish -> fail' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
+    my $publisher = AWS::SDK::SNS->new(topic => 'test', config => $config);
     $publisher = Test::MockObject::Extends->new($publisher);
     $publisher->mock('make_request' => sub {return fail_response()});
 
@@ -50,7 +50,7 @@ subtest 'Publish -> fail' => sub {
 };
 
 subtest 'Publish -> invalid args' => sub {
-    my $publisher = Bean::AWS::SNS->new(topic => 'test', config => $config);
+    my $publisher = AWS::SDK::SNS->new(topic => 'test', config => $config);
     $publisher = Test::MockObject::Extends->new($publisher);
     $publisher->mock('make_request' => sub {return fail 'Should have died before now'});
 
@@ -94,7 +94,7 @@ subtest 'Publish -> invalid args' => sub {
 done_testing;
 
 sub fail_response {
-    Bean::AWS::Exception::FailedRequest->throw({message => 'InternalFailure'});
+    AWS::SDK::Exception::FailedRequest->throw({message => 'InternalFailure'});
 }
 
 sub success_response {

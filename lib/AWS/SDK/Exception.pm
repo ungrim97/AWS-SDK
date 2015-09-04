@@ -1,7 +1,7 @@
-package Bean::AWS::Exception;
+package AWS::SDK::Exception;
 
 {
-    package Bean::AWS::Exception::Base;
+    package AWS::SDK::Exception::Base;
 
     use Moo;
     use overload qw/""/ => 'as_string', fallback => 1;
@@ -11,36 +11,36 @@ package Bean::AWS::Exception;
     with 'Throwable';
 }
 {
-    package Bean::AWS::Exception::MissingConfig;
+    package AWS::SDK::Exception::MissingConfig;
 
     use Moo;
 
-    extends 'Bean::AWS::Exception::Base';
+    extends 'AWS::SDK::Exception::Base';
 
     sub as_string {
         return "Missing entry in config file: ".shift->message."\n";
     }
 }
 {
-    package Bean::AWS::Exception::InvalidArgs;
+    package AWS::SDK::Exception::InvalidArgs;
 
     use Moo;
 
-    extends 'Bean::AWS::Exception::Base';
+    extends 'AWS::SDK::Exception::Base';
 
     sub as_string {
         return 'Invalid arguments provided: '.shift->message."\n";
     }
 }
 {
-    package Bean::AWS::Exception::FailedRequest;
+    package AWS::SDK::Exception::FailedRequest;
 
     use Moo;
 
-    extends 'Bean::AWS::Exception::Base';
+    extends 'AWS::SDK::Exception::Base';
 
     sub as_string {
-        return 'AWS request failed: '.shift->message."\n";
+        return 'AWS::SDK request failed: '.shift->message."\n";
     };
 }
 

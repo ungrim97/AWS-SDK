@@ -1,14 +1,14 @@
-package Bean::AWS::SNS;
+package AWS::SDK::SNS;
 
 =head1 NAME
 
-Bean::AWS::SNS - Interface with the Amazon SNS service
+AWS::SDK::SNS - Interface with the Amazon SNS service
 
 =head1 SUMMARY
 
-    use Bean::AWS::SNS;
+    use AWS::SDK::SNS;
 
-    my $publisher = Bean::AWS::SNS->new(config_path => '~/', topic => 'MyTopic');
+    my $publisher = AWS::SDK::SNS->new(config_path => '~/', topic => 'MyTopic');
     $publisher->publish({message => $message, subject => $subject});
 
 =head1 DESCRIPTION
@@ -31,19 +31,19 @@ The aim here is that this module would be replaced by a more complete CPAN libra
 or would become an open source library of its own. It currently implements the various API
 calls provided by the SNS system.
 
-See L<Bean::AWS::SNS#Supported Actions> for more information
+See L<AWS::SDK::SNS#Supported Actions> for more information
 
 =cut
 
 use Moo;
-use Bean::AWS::Types qw/URL AWSARN/;
-use Bean::AWS::Exception;
+use AWS::SDK::Types qw/URL AWSARN/;
+use AWS::SDK::Exception;
 use Types::Standard qw/Str Dict HashRef Map slurpy/;
 
 # Helper roles
-with 'Bean::AWS::Configurator';
-with 'Bean::AWS::SNS::Auth';
-with 'Bean::AWS::SNS::Requester';
+with 'AWS::SDK::Configurator';
+with 'AWS::SDK::SNS::Auth';
+with 'AWS::SDK::SNS::Requester';
 
 =head1 CONFIG
 
@@ -115,8 +115,8 @@ Subscribe an Endpoint to a SNS Topic in order to receive messages
 =cut
 
 # Supported Actions
-with 'Bean::AWS::SNS::Publish';
-with 'Bean::AWS::SNS::Subscribe';
+with 'AWS::SDK::SNS::Publish';
+with 'AWS::SDK::SNS::Subscribe';
 
 =back
 
@@ -136,7 +136,7 @@ sub topic_arn {
     my ($self) = @_;
 
     return $self->config->{sns}{topics}{$self->topic} ||
-        Bean::AWS::Exception::InvalidArgs->throw({
+        AWS::SDK::Exception::InvalidArgs->throw({
             message => 'Unable to retrieve Topic ARN for '.$self->topic
         });
 }
